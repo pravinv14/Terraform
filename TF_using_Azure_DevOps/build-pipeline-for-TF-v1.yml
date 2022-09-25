@@ -1,0 +1,101 @@
+name: $(BuildDefinitionName)_$(DayOfMonth).$(Month).$(Year:yyyy)_$(Hours)_$(Minutes)
+
+trigger:
+  - none
+
+pr: none
+
+pool:
+  name: name of agent pool
+
+stages :
+  - stage: TFvalidate
+    jobs:
+    - job: validate_terraform
+      continueOnError: false
+      steps:
+      - task: TerraformInstaller@0
+        displayName: 'install'
+        inputs:
+          terraformVersion: 'latest'
+      - task: TerraformTaskV2@2
+        displayName: 'TF init'
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          backendServiceArm: 'terraform-cred'
+          backendAzureRmResourceGroupName: 'example-rg'
+          backendAzureRmStorageAccountName: 'centralsa'
+          backendAzureRmContainerName: 'tfstatecontainer'
+          backendAzureRmKey: 'dev.tfstate'
+      - task: TerraformTaskV3@3
+        displayName: 'TF Validate'
+        inputs:
+          provider: 'azurerm'
+          command: 'validate'
+
+  - stage: TFdeploy
+    # conditionals ref link here.
+    # https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
+    condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+    jobs:
+    - deployment: deploy_terraform
+      continueOnError: false
+      environment: 'dev'
+      strategy:
+       runOnce:
+         deploy:
+            steps:
+              - checkout: self
+              - task: TerraformInstaller@0
+                displayName: 'install'
+                inputs:
+                  terraformVersion: 'latest'
+              - task: TerraformTaskV2@2
+                displayName: 'init'
+                inputs:
+                  provider: 'azurerm'
+                  command: 'init'
+                  backendServiceArm: 'terraform-cred'
+                  backendAzureRmResourceGroupName: 'example-rg'
+                  backendAzureRmStorageAccountName: 'centralsa'
+                  backendAzureRmContainerName: 'tfstatecontainer'
+                  backendAzureRmKey: 'dev.tfstate'
+              - task: TerraformTaskV2@2
+                displayName: 'plan'
+                inputs:
+                  provider: 'azurerm'
+                  command: 'plan'
+                  environmentServiceNameAzureRM: 'terraform-cred'
+              - task: TerraformTaskV2@2
+                displayName: 'apply'
+                inputs:
+                  provider: 'azurerm'
+                  command: 'apply'
+                  environmentServiceNameAzureRM: 'terraform-cred'
+
+  - stage: Stage3
+    
+    jobs:
+    - job: validate_terraform
+      continueOnError: false      
+      steps:
+      - task: TerraformInstaller@0
+        displayName: 'install'
+        inputs:
+          terraformVersion: 'latest'
+      - task: TerraformTaskV2@2
+        displayName: 'TF init'
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          backendServiceArm: 'terraform-cred'
+          backendAzureRmResourceGroupName: 'example-rg'
+          backendAzureRmStorageAccountName: 'centralsa'
+          backendAzureRmContainerName: 'tfstatecontainer'
+          backendAzureRmKey: 'dev.tfstate'
+      - task: TerraformTaskV3@3
+        displayName: 'TF Validate'
+        inputs: 
+          provider: 'azurerm'
+          command: 'validate'
