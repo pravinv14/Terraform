@@ -21,15 +21,15 @@ TODO: Create a Azure DevOps pipeline for deploying Azure resource using IaC tool
     
     # Follow below command
 
-    az login --tenant "s893jsk2920-289290-28393"
-    az account set --subscription "i3kdo93m-2dkdkdkdk-2828292"
+    1) az login --tenant "s893jsk2920-289290-28393"
+    2) az account set --subscription "i3kdo93m-2dkdkdkdk-2828292"
 
 
     # Set Variables for Storage account and Key Vault that support the Terraform implementation
-    RESOURCE_GROUP_NAME=your-rg
-    STORAGE_ACCOUNT_NAME=yoursa
-    CONTAINER_NAME=tfstatecontainer
-    STATE_FILE="dev.file.state"
+    1) RESOURCE_GROUP_NAME=your-rg
+    2) STORAGE_ACCOUNT_NAME=yoursa
+    3) CONTAINER_NAME=tfstatecontainer
+    4) STATE_FILE="dev.file.state"
 
     # Create resource group
     az group create --name $RESOURCE_GROUP_NAME --location eastus
@@ -50,6 +50,6 @@ TODO: Create a Azure DevOps pipeline for deploying Azure resource using IaC tool
     4) echo "state_file: $STATE_FILE" 
 
     # Create KeyVault and example for storing a key
-    az keyvault create --name "examplekv" --resource-group $RESOURCE_GROUP_NAME --location eastus
-    az keyvault secret set --vault-name "examplekv" --name "tfstateaccess" --value {$ACCOUNT_KEY}
-    az keyvault secret show --vault-name "examplekv" --name "tfstateaccess"
+    1) az keyvault create --name "examplekv" --resource-group $RESOURCE_GROUP_NAME --location eastus
+    2) az keyvault secret set --vault-name "examplekv" --name "tfstateaccess" --value {$ACCOUNT_KEY}
+    3) az keyvault secret show --vault-name "examplekv" --name "tfstateaccess"
