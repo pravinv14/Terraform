@@ -43,7 +43,7 @@ TODO: Create a Azure DevOps pipeline for deploying Azure resource using IaC tool
     # Create blob container
     az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME --account-key $ACCOUNT_KEY
 
-    # Show details for the purposes of this code
+    # echo details
     echo "storage_account_name: $STORAGE_ACCOUNT_NAME"
     echo "container_name: $CONTAINER_NAME"
     echo "access_key: $ACCOUNT_KEY"
