@@ -43,11 +43,11 @@ TODO: Create a Azure DevOps pipeline for deploying Azure resource using IaC tool
     # Create blob container
     az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME --account-key $ACCOUNT_KEY
 
-    # echo details
-    echo "storage_account_name: $STORAGE_ACCOUNT_NAME"
-    echo "container_name: $CONTAINER_NAME"
-    echo "access_key: $ACCOUNT_KEY"
-    echo "state_file: $STATE_FILE"
+    Echo details
+    1) echo "storage_account_name: $STORAGE_ACCOUNT_NAME" \n
+    2) echo "container_name: $CONTAINER_NAME" \n 
+    3) echo "access_key: $ACCOUNT_KEY" \n
+    4) echo "state_file: $STATE_FILE" \n
 
     # Create KeyVault and example for storing a key
     az keyvault create --name "examplekv" --resource-group $RESOURCE_GROUP_NAME --location eastus
