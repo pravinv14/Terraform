@@ -45,11 +45,11 @@ stages :
       - job: terraform_apply
         steps:
           - task: TerraformInstaller@0
-            displayName: 'install'
+            displayName: 'TF installer'
             inputs:
                 terraformVersion: '${{ variables.tfver }}'
           - task: TerraformTaskV2@2
-            displayName: 'init'
+            displayName: 'TF init'
             inputs:
               provider: 'azurerm'
               command: 'init'
@@ -60,7 +60,7 @@ stages :
               backendAzureRmKey: '${{ variables.backendAzureRmKey }}'
               #workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
           - task: TerraformTaskV2@2
-            displayName: 'plan'
+            displayName: 'TF plan'
             condition: and(succeeded(), eq(variables['Action'], 'Plan'))
             inputs:
               provider: 'azurerm'
@@ -68,7 +68,7 @@ stages :
               environmentServiceNameAzureRM: '${{ variables.backendServiceArm }}'
               #workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
           - task: TerraformTaskV2@2
-            displayName: 'apply'
+            displayName: 'TF apply'
             condition: and(succeeded(), eq(variables['Action'], 'Apply'))
             inputs:
               provider: 'azurerm'
@@ -83,11 +83,11 @@ stages :
       - job: terraform_destroy
         steps:
           - task: TerraformInstaller@0
-            displayName: 'install'
+            displayName: 'TF install'
             inputs:
                 terraformVersion: '${{ variables.tfver }}'
           - task: TerraformTaskV2@2
-            displayName: 'init'
+            displayName: 'TF init'
             inputs:
               provider: 'azurerm'
               command: 'init'
@@ -98,7 +98,7 @@ stages :
               backendAzureRmKey: '${{ variables.backendAzureRmKey }}'
               #workingDirectory: '$(System.DefaultWorkingDirectory)/'
           - task: TerraformTaskV2@2
-            displayName: 'destroy'
+            displayName: 'TF destroy'
             condition: and(succeeded(), eq(variables['action'], 'Destroy'))
             inputs:
               provider: 'azurerm'
