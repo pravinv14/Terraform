@@ -1,7 +1,9 @@
+# backendAzureRmKey this variable needs to be updated when you require a new tf state file for resources 
+# and refer same tf state file if need to destroy.
 name: $(BuildDefinitionName)_$(DayOfMonth).$(Month).$(Year:yyyy)_$(Hours)_$(Minutes)
  
 trigger: 
-  - none
+  - main
  
 pr: none
 
@@ -28,7 +30,11 @@ variables:
   - name: backendAzureRmContainerName
     value: 'tfstatecontainer'
   - name: backendAzureRmKey
-    value: 'dev.tfstate'
+    value: 'devwinAVDvm.tfstate'
+  - name: parallelRun
+    value: '15'
+  - name: tfver
+    value: '1.0.0'
   - name: action
     value: ${{ parameters.Action }}
  
@@ -40,6 +46,8 @@ stages :
         steps:
           - task: TerraformInstaller@0
             displayName: 'install'
+            inputs:
+                terraformVersion: '${{ variables.tfver }}'
           - task: TerraformTaskV2@2
             displayName: 'init'
             inputs:
@@ -65,6 +73,7 @@ stages :
             inputs:
               provider: 'azurerm'
               command: 'apply'
+              commandOptions: '-parallelism=${{ variables.parallelRun }}'
               environmentServiceNameAzureRM: '${{ variables.backendServiceArm }}'
               #workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
  
@@ -75,6 +84,8 @@ stages :
         steps:
           - task: TerraformInstaller@0
             displayName: 'install'
+            inputs:
+                terraformVersion: '${{ variables.tfver }}'
           - task: TerraformTaskV2@2
             displayName: 'init'
             inputs:
@@ -92,5 +103,6 @@ stages :
             inputs:
               provider: 'azurerm'
               command: 'destroy'
+              commandOptions: '-parallelism=${{ variables.parallelRun }}'
               environmentServiceNameAzureRM: '${{ variables.backendServiceArm }}'
               #workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
